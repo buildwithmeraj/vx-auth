@@ -9,3 +9,7 @@ Route::get('/', function () {
 Route::get('/login', function (){
     return view('auth.login');
 });
+
+Route::get('/register', [\App\Http\Controllers\RegistrationController::class, 'show']);
+
+Route::post('/register', [\App\Http\Controllers\RegistrationController::class, 'progress']);

@@ -5,4 +5,8 @@
 @source '../**/*.blade.php';
 @source '../**/*.js';
 
-@plugin "daisyui"
+@plugin "daisyui";
+
+label {
+    @apply block text-sm font-medium opacity-70 my-1;
+}

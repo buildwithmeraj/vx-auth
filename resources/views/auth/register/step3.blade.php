@@ -133,7 +133,8 @@
                     </p>
                 </div>
             </div>
-            <label class="label"><input type="checkbox" name="agreement" class="checkbox mr-2" required />
+            <label class="label"><input type="checkbox" id="agreement" name="agreement" class="checkbox mr-2"
+                                        required />
                 I agree</label>
             <div class="card-actions justify-between">
                 <button type="submit" form="prev" class="btn">Prev</button>

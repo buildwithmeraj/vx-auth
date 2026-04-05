@@ -6,17 +6,17 @@
             <div>
                 <label for="first_name">First Name</label>
                 <input type="text" name="first_name" placeholder="Merajul" value="{{ $data['first_name'] ?? '' }}"
-                       class="input w-full" required>
+                       class="input w-full" id="first_name" required>
             </div>
             <div>
                 <label for="last_name">Last Name</label>
                 <input type="text" placeholder="Islam" name="last_name" class="input w-full"
-                       value="{{ $data['last_name'] ?? '' }}" required />
+                       value="{{ $data['last_name'] ?? '' }}" id="last_name" required />
             </div>
             <div>
                 <label for="email">Email</label>
                 <input type="email" placeholder="Islam" name="email" class="input w-full"
-                       value="{{ $data['email'] ?? '' }}" required />
+                       value="{{ $data['email'] ?? '' }}" id="email" required />
             </div>
             <div>
                 <div class="flex items-center gap-2">
@@ -35,7 +35,7 @@
                 </div>
                 <div class="flex items-center gap-2">
                     <input type="url" placeholder="https://i.ibb.co...." name="photo" class="input w-full flex-1"
-                           value="{{ $data['photo'] ?? '' }}" required />
+                           value="{{ $data['photo'] ?? '' }}" id="photo" required />
                     <a href="https://imgbb.com" target="_blank" class="btn">
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
                              stroke="currentColor" class="size-4">

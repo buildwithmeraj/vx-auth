@@ -6,7 +6,7 @@
             <input type="hidden" name="step" value="3">
             <div>
                 <label for="gender">Gender</label>
-                <select class="select w-full" name="gender">
+                <select class="select w-full" name="gender" id="gender" required>
                     <option value="male" {{ ($data['gender'] ?? '') === "male" ? 'selected' : '' }}>Male</option>
                     <option value="female" {{ ($data['gender'] ?? '') === "female" ? 'selected' : '' }}>Female</option>
                     <option value="other" {{ ($data['gender'] ?? '') === "other" ? 'selected' : '' }}>Other</option>
@@ -15,12 +15,12 @@
             <div>
                 <label for="phone">Phone</label>
                 <input type="tel" placeholder="+8801XXXXXXXXX" name="phone" class="input w-full"
-                       value="{{ $data['phone'] ?? '' }}" />
+                       value="{{ $data['phone'] ?? '' }}" id="phone" required />
             </div>
             <div>
                 <label for="address">Address</label>
                 <input type="text" placeholder="Dhaka-1201, Bangladesh" name="address" class="input w-full"
-                       value="{{ $data['address'] ?? '' }}" required />
+                       value="{{ $data['address'] ?? '' }}" id="address" required />
             </div>
             <div class="card-actions justify-between">
                 <button type="submit" form="prev" class="btn">Prev</button>

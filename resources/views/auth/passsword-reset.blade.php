@@ -11,6 +11,9 @@
                         <x-alert-error>{{ $error }}</x-alert-error>
                     @endforeach
                 @endif
+                @if (session('status'))
+                    <x-alert-success>{{ session('status') }}</x-alert-success>
+                @endif
                 @if(empty(request('token')))
                     <x-alert-error>Invalid or expired reset token. Please request a new password reset.</x-alert-error>
                     <div class="hover:text-primary text-center mt-2"><a href="/forgot-password">Forgot password page</a>
@@ -19,11 +22,14 @@
                     <input type="hidden" name="reset_token" value="{{ request('token') }}" />
                     <div>
                         <label for="password">Password</label>
-                        <input type="password" placeholder="********" name="password" class="input w-full" required />
+                        <input type="password" placeholder="********" name="password" class="input w-full" id="password"
+                               required />
                     </div>
                     <div>
-                        <label for="confirm_password">Confirm Password</label>
-                        <input type="password" placeholder="********" name="confirm_password" class="input w-full"
+                        <label for="password_confirmation">Confirm Password</label>
+                        <input type="password" placeholder="********" name="password_confirmation"
+                               id="password_confirmation"
+                               class="input w-full"
                                required />
                     </div>
                     <div class="card-actions justify-end mt-2">

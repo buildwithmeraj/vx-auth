@@ -1,34 +1,45 @@
 <?php
 
+use App\Http\Controllers\AuthController;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
     return view('welcome');
 });
 
-Route::get('/login', function (){
-    return view('auth.login');
+// guest routes
+Route::middleware('guest')->group(function () {
+    // login routes
+    Route::get('/login', [AuthController::class, 'showLoginForm'])->name('login');
+    Route::post('/login', [AuthController::class, 'loginProcess']);
+
+    // registration routes
+    Route::get('/register', [AuthController::class, 'showRegistrationForm'])->name('register');
+    Route::post('/register', [AuthController::class, 'registrationProcess']);
+    Route::get('/register/success', function () {
+        return view('auth.success');
+    })->name('register.success');
 });
 
-Route::get('/login', [\App\Http\Controllers\AuthController::class, 'showLoginForm']);
+// auth required routes
+Route::middleware('auth')->group(function () {
+    // dashboard route
+    Route::get('/dashboard', function () {
+        return view('dashboards.main');
+    })->name('dashboard');
 
-Route::post('/login', [\App\Http\Controllers\AuthController::class, 'loginProcess']);
-
-Route::get('/register', [\App\Http\Controllers\AuthController::class, 'showRegistrationForm']);
-
-Route::post('/register', [\App\Http\Controllers\AuthController::class, 'registrationProcess']);
-
-Route::get('/register/success', function (){
-    return view('auth.success');
+    // logout route
+    Route::post('/logout', function () {
+        Auth::logout();
+        request()->session()->invalidate();
+        request()->session()->regenerateToken();
+        return redirect('/login');
+    })->name('logout');
 });
 
-Route::get('/reset-password', function (){
+// no middleware routes
+Route::get('/reset-password', function () {
     return view('auth.passsword-reset');
-});
-
-Route::post('/reset-password', [\App\Http\Controllers\AuthController::class, 'resetPassword']);
-
-
-Route::get('/dashboard', function (){
-    return view('dashboards.user');
-})->middleware('auth');
+})->name('password.reset');
+Route::post('/reset-password', [AuthController::class, 'resetPassword'])->name('password.reset.submit');

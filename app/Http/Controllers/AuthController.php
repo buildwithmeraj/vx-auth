@@ -83,6 +83,12 @@ class AuthController extends Controller
             // add a random reset token for password setups
             $validated_data['reset_token'] = $this->generateToken(32);
 
+            // set a temporary password and mark it as not set
+            $validated_data['password'] = $this->generateToken(16);
+
+            // mark the password as not set
+            $validated_data['password_set'] = 0;
+
             $user = User::create($validated_data);
 
             if (!$user) {
@@ -117,7 +123,9 @@ class AuthController extends Controller
     public function showLoginForm(Request $request)
     {
         // return view according to the current step stored in session
-        return view('auth.login');
+        return view('auth.login', [
+            'data' => session('login_data', []) // Pass session data
+        ]);
     }
 
     public function loginProcess(Request $request)
@@ -133,22 +141,31 @@ class AuthController extends Controller
 
         if(!$user) {
             throw ValidationException::withMessages([
-                'user' => ['Invalid user or password nf.'],
+                'user' => ['Invalid user or password.'],
             ]);
         }
 
         if($user->password_set === 0) {
             // log the user in without password and redirect to reset password page
-            Auth::login($user);
-            // regenerate session to prevent fixation attacks
-            $request->session()->regenerate();
-
-            return redirect('/reset-password?token=' . $user->reset_token);
+            return redirect('/reset-password?token=' . $user->reset_token)->with('status', 'Please set your password first.');
         }
 
-        Auth::login($user, $request->has('remember'));
-        $request->session()->regenerate();
+        // check the password
+        if (empty($credential['password'])) {
+            throw ValidationException::withMessages([
+                'password' => ['Password is required.'],
+            ]);
+        }
 
+        // try to log the user in with the provided credentials
+        if (!Auth::attempt(['userID' => $credential['userid'], 'password' => $credential['password']], $request->has('remember'))) {
+            throw ValidationException::withMessages([
+                'user' => ['Invalid user or password.'],
+            ]);
+        }
+        
+        // regenerate session
+        $request->session()->regenerate();
         return redirect('/dashboard');
     }
 
@@ -159,7 +176,7 @@ class AuthController extends Controller
 
         // validate the token
         if (!$token) {
-            return redirect('/reset-password?token='.$token)->withErrors(['token' => 'Invalid or missing token.']);
+            return redirect('/reset-password')->withErrors(['token' => 'Invalid or missing token.']);
         }
 
         // find the user with the matching reset token
@@ -169,21 +186,13 @@ class AuthController extends Controller
             return redirect('/reset-password?token='.$token)->withErrors(['token' => 'Invalid or expired token.']);
         }
 
-        // get passwords from the request
-        $password = $request->input('password');
-        $confirm_password = $request->input('confirm_password');
-
-        if(!$password || !$confirm_password) {
-            return redirect('/reset-password?token='.$token)->withErrors(['password' => 'Password and confirmation are required.']);
-        }
-
-        if($password !== $confirm_password) {
-            return redirect('/reset-password?token='.$token)->withErrors(['password' => 'Passwords do not match.']);
-        }
+        // validate the new password
+        $request->validate([
+            'password' => 'required|string|min:6|max:20|confirmed',
+        ]);
 
         // update the user's password and clear the reset token
-        $user = User::find($user->id);
-        $user->password = bcrypt($password);
+        $user->password = $request->input('password');
         $user->password_set = 1;
         $user->reset_token = null;
         $user->save();

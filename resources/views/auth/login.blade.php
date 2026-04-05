@@ -11,6 +11,9 @@
                         <x-alert-error>{{ $error }}</x-alert-error>
                     @endforeach
                 @endif
+                @if (session('status'))
+                    <x-alert-success>{{ session('status') }}</x-alert-success>
+                @endif
                 <div>
                     <label for="userid">User ID</label>
                     <input type="text" placeholder="VX123456" name="userid" class="input w-full"

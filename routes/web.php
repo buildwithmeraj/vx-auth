@@ -26,6 +26,9 @@ Route::get('/reset-password', function (){
     return view('auth.passsword-reset');
 });
 
+Route::post('/reset-password', [\App\Http\Controllers\AuthController::class, 'resetPassword']);
+
+
 Route::get('/dashboard', function (){
     return view('dashboards.user');
 })->middleware('auth');

@@ -24,9 +24,8 @@ return new class extends Migration
             $table->string('gender');
             $table->string('address');
             $table->string('reset_token')->nullable();
-            $table->boolean('password_set')->default(false);
             $table->rememberToken();
-            $table->timestamp('remember_token_expires_at')->nullable();
+            $table->boolean('password_set')->default(false);
             $table->timestamps();
         });
 

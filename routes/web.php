@@ -22,3 +22,10 @@ Route::get('/register/success', function (){
     return view('auth.success');
 });
 
+Route::get('/reset-password', function (){
+    return view('auth.passsword-reset');
+});
+
+Route::get('/dashboard', function (){
+    return view('dashboards.user');
+})->middleware('auth');

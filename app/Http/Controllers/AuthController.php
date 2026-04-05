@@ -1,11 +1,14 @@
 <?php
 
 namespace App\Http\Controllers;
+use App\Mail\UserCredentialsMail;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\ValidationException;
+
 
 class AuthController extends Controller
 {
@@ -38,23 +41,29 @@ class AuthController extends Controller
 
         // if it is the final step
         if ($targetStep == 3) {
+            // get the data from the session
             $data = session('register_data', []);
 
+            // just visiting step 3 — show the page
+            if (!$request->isMethod('post') || !$request->has('submit')) {
+                return redirect('/register');
+            }
+
+            // handle form submission
             if (!$request->has('agreement')) {
                 return redirect()->back()
                     ->withErrors(['agreement' => 'You must agree to the terms and conditions.'])
                     ->withInput();
             }
 
-            // now validate all the data before creating the user
             $validator = Validator::make($data, [
                 'first_name' => 'required|string|max:20',
-                'last_name' => 'required|string|max:20',
-                'email' => 'required|email|unique:users,email',
-                'photo' => 'required|string|min:15|max:300',
-                'gender' => 'required|string|min:4|max:6',
-                'phone' => 'required|string|min:9|max:20',
-                'address' => 'required|string|min:10|max:50',
+                'last_name'  => 'required|string|max:20',
+                'email'      => 'required|email|unique:users,email',
+                'photo'      => 'required|string|min:15|max:300',
+                'gender'     => 'required|string|min:4|max:6',
+                'phone'      => 'required|string|min:9|max:20',
+                'address'    => 'required|string|min:10|max:50',
             ]);
 
             if ($validator->fails()) {
@@ -63,30 +72,36 @@ class AuthController extends Controller
                     ->withInput();
             }
 
-            // prepare validated data for user creation
             $validated_data = $validator->validated();
 
-            // create the user
+            // Generate a unique userID with 'VX' prefix and 6 random digits
+            do {
+                $validated_data['userID'] = 'VX' . rand(100000, 999999);
+            } while (\App\Models\User::where('userID', $validated_data['userID'])->exists());
+
+
             $user = User::create($validated_data);
 
-            if($user) {
-                // clear the session data after successful registration
-                session()->forget(['register_step', 'register_data']);
-
-                // get updated user data to send email with the userID and password
-                $user->refresh();
-
-                // get userID and password from the created user
-                $userID = $user->userID;
-                $password = $user->default_password;
-
-                // redirect to the success page
-                return redirect('/register/success');
-            } else {
+            if (!$user) {
                 return redirect()->back()
                     ->withErrors(['registration' => 'Failed to create user. Please try again.'])
                     ->withInput();
             }
+
+            session()->forget(['register_step', 'register_data']);
+
+            $user->refresh();
+
+            $userID   = $user->userID;
+
+            Mail::to($user->email)->send(
+                new UserCredentialsMail(
+                    name: $user->first_name,
+                    userId: $userID
+                )
+            );
+
+            return redirect('/register/success');
         }
 
         return redirect('/register');
@@ -104,22 +119,25 @@ class AuthController extends Controller
 
         $credential = $request->validate(
             [
-                'user' => 'required|string|size:8',
-                'password' => 'required|string|min:6|max:20',
+                'userid' => 'required|string|size:8',
+                'password' => 'nullable|string|min:6|max:20',
             ]
         );
-        $user = User::where('userID', $credential['user'])->first();
+        $user = User::where('userID', $credential['userid'])->first();
 
         if(!$user) {
             throw ValidationException::withMessages([
-                'user' => ['Invalid user or password.'],
+                'user' => ['Invalid user or password nf.'],
             ]);
         }
+        
+        if($user->password_set === 0) {
+            // log the user in without password and redirect to reset password page
+            Auth::login($user);
+            // regenerate session to prevent fixation attacks
+            $request->session()->regenerate();
 
-        if($user->password === "") {
-            throw ValidationException::withMessages([
-                'user' => ['Password was not set, please check your the email to set your pa.'],
-            ]);
+            return redirect('/reset-password');
         }
 
         if(!Auth::attempt($credential, true))  {

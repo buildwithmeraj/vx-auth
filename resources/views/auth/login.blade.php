@@ -12,14 +12,22 @@
                     @endforeach
                 @endif
                 <div>
-                    <label for="user">User ID</label>
-                    <input type="text" placeholder="VX123456" name="user" class="input w-full"
-                           value="{{ $data['user'] ?? '' }}" required />
+                    <label for="userid">User ID</label>
+                    <input type="text" placeholder="VX123456" name="userid" class="input w-full"
+                           value="{{ $data['userid'] ?? '' }}" required />
                 </div>
                 <div>
                     <label for="password">Password</label>
                     <input type="password" placeholder="********" name="password" class="input w-full"
-                           value="{{ $data['last_name'] ?? '' }}" required />
+                           value="{{ $data['last_name'] ?? '' }}" />
+                </div>
+                <div class="mt-1">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                         stroke="currentColor" class="size-4 inline">
+                        <path stroke-linecap="round" stroke-linejoin="round"
+                              d="m11.25 11.25.041-.02a.75.75 0 0 1 1.063.852l-.708 2.836a.75.75 0 0 0 1.063.853l.041-.021M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Zm-9-3.75h.008v.008H12V8.25Z" />
+                    </svg>
+                    Password is optional for new users.
                 </div>
                 <div class="card-actions justify-end mt-2">
                     <button type="submit" class="btn btn-block">Login</button>

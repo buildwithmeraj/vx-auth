@@ -135,12 +135,9 @@
             </div>
             <label class="label"><input type="checkbox" name="agreement" class="checkbox mr-2" required />
                 I agree</label>
-            @error('agreement')
-            <x-alert-error>{{ $message }}</x-alert-error>
-            @enderror
             <div class="card-actions justify-between">
                 <button type="submit" form="prev" class="btn">Prev</button>
-                <button type="submit" class="btn btn-primary">Submit</button>
+                <button type="submit" name="submit" class="btn btn-primary">Submit</button>
             </div>
 
         </form>

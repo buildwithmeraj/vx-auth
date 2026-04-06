@@ -15,7 +15,7 @@
             </div>
             <div>
                 <label for="email">Email</label>
-                <input type="email" placeholder="Islam" name="email" class="input w-full"
+                <input type="email" placeholder="email@domain.com" name="email" class="input w-full"
                        value="{{ $data['email'] ?? '' }}" id="email" required />
             </div>
             <div>

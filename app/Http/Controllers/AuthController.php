@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Http\Controllers;
+use App\Mail\ForgotPasswordMail;
 use App\Mail\UserCredentialsMail;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -21,9 +22,11 @@ class AuthController extends Controller
             'data' => session('register_data', [])
         ]);
     }
-    public function registrationProcess(Request $request) {
+
+    public function registrationProcess(Request $request)
+    {
         // get the target step from the request
-        $targetStep = (int) $request->input('step');
+        $targetStep = (int)$request->input('step');
 
         // validate the target step
         if (!in_array($targetStep, [1, 2, 3])) {
@@ -59,12 +62,12 @@ class AuthController extends Controller
 
             $validator = Validator::make($data, [
                 'first_name' => 'required|string|max:20',
-                'last_name'  => 'required|string|max:20',
-                'email'      => 'required|email|unique:users,email',
-                'photo'      => 'required|string|min:15|max:300',
-                'gender'     => 'required|string|min:4|max:6',
-                'phone'      => 'required|string|min:9|max:20',
-                'address'    => 'required|string|min:10|max:50',
+                'last_name' => 'required|string|max:20',
+                'email' => 'required|email|unique:users,email',
+                'photo' => 'required|string|min:15|max:300',
+                'gender' => 'required|string|min:4|max:6',
+                'phone' => 'required|string|min:9|max:20',
+                'address' => 'required|string|min:10|max:50',
             ]);
 
             if ($validator->fails()) {
@@ -101,7 +104,7 @@ class AuthController extends Controller
 
             $user->refresh();
 
-            $userID   = $user->userID;
+            $userID = $user->userID;
 
             Mail::to($user->email)->send(
                 new UserCredentialsMail(
@@ -116,7 +119,8 @@ class AuthController extends Controller
         return redirect('/register');
     }
 
-    private function generateToken($length) {
+    private function generateToken($length)
+    {
         return Str::password($length ?? 8, true, true, false, false);
     }
 
@@ -139,13 +143,13 @@ class AuthController extends Controller
         );
         $user = User::where('userID', $credential['userid'])->first();
 
-        if(!$user) {
+        if (!$user) {
             throw ValidationException::withMessages([
                 'user' => ['Invalid user or password.'],
             ]);
         }
 
-        if($user->password_set === 0) {
+        if ($user->password_set === 0) {
             // log the user in without password and redirect to reset password page
             return redirect('/reset-password?token=' . $user->reset_token)->with('status', 'Please set your password first.');
         }
@@ -163,7 +167,7 @@ class AuthController extends Controller
                 'user' => ['Invalid user or password.'],
             ]);
         }
-        
+
         // regenerate session
         $request->session()->regenerate();
         return redirect('/dashboard');
@@ -183,7 +187,7 @@ class AuthController extends Controller
         $user = User::where('reset_token', $token)->first();
 
         if (!$user) {
-            return redirect('/reset-password?token='.$token)->withErrors(['token' => 'Invalid or expired token.']);
+            return redirect('/reset-password?token=' . $token)->withErrors(['token' => 'Invalid or expired token.']);
         }
 
         // validate the new password
@@ -201,5 +205,28 @@ class AuthController extends Controller
         Auth::logout();
 
         return redirect('/login')->with('status', 'Password reset successful. Please log in with your new password.');
+    }
+
+
+    public function forgotPasswordProcess()
+    {
+        $email = request()->validate([
+            'email' => 'required|email|exists:users,email',
+        ])['email'];
+        $user = User::where('email', $email)->first();
+        if(!$user) {
+            return redirect()->back()->withErrors(['email' => 'No user found with this email address.']);
+        }
+        $token = $this->generateToken(32);
+        $user->reset_token = $token;
+        $user->save();
+        Mail::to($user->email)->send(
+            new ForgotPasswordMail(
+                name: $user->first_name,
+                token: $token,
+            )
+        );
+
+        return redirect('/forgot-password')->with('status', 'A password reset link has been sent to your email address.');
     }
 }

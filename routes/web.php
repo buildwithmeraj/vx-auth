@@ -14,6 +14,13 @@ Route::middleware('guest')->group(function () {
     Route::get('/login', [AuthController::class, 'showLoginForm'])->name('login');
     Route::post('/login', [AuthController::class, 'loginProcess']);
 
+    // forgot password routes
+    Route::get('/forgot-password', function ()
+    {
+        return view('auth.forgot-password');
+    });
+    Route::post('/forgot-password', [AuthController::class, 'forgotPasswordProcess'])->name('password.email');
+
     // registration routes
     Route::get('/register', [AuthController::class, 'showRegistrationForm'])->name('register');
     Route::post('/register', [AuthController::class, 'registrationProcess']);
@@ -25,9 +32,7 @@ Route::middleware('guest')->group(function () {
 // auth required routes
 Route::middleware('auth')->group(function () {
     // dashboard route
-    Route::get('/dashboard', function () {
-        return view('dashboards.main');
-    })->name('dashboard');
+    Route::get('/dashboard', [\App\Http\Controllers\AdminDashboardController::class, 'allUsers'])->name('dashboard');
 
     // logout route
     Route::post('/logout', function () {

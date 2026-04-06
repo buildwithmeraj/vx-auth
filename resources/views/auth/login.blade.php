@@ -20,7 +20,10 @@
                            value="{{ $data['userid'] ?? '' }}" required />
                 </div>
                 <div>
-                    <label for="password">Password</label>
+                    <div class="flex items-center justify-between">
+                        <label for="password">Password</label>
+                        <a href="/forgot-password" class="text-sm opacity-50">Forgot?</a>
+                    </div>
                     <input type="password" placeholder="********" name="password" id="password" class="input w-full" />
                 </div>
                 <div class="mt-1">

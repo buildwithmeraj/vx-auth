@@ -4,7 +4,7 @@ Laravel project for a role-based authentication flow with a 3-step registration 
 
 ## Live Demo
 
-- URL: [https://https://meraj.pro/vx-auth/](https://meraj.pro/vx-auth/)
+- URL: [https://meraj.pro/vx-auth/](https://meraj.pro/vx-auth/)
 
 ## Requirements
 

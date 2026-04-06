@@ -12,7 +12,7 @@ class AdminDashboardController extends Controller
             return view('dashboards.user');
         } else {
             return view('dashboards.admin', [
-                'users' => User::all()
+                'all_users' => User::all()
             ]);
         }
 

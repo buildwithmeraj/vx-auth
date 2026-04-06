@@ -4,9 +4,6 @@ use App\Http\Controllers\AuthController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
-Route::get('/', function () {
-    return view('welcome');
-});
 
 // guest routes
 Route::middleware('guest')->group(function () {
@@ -32,6 +29,8 @@ Route::middleware('guest')->group(function () {
 // auth required routes
 Route::middleware('auth')->group(function () {
     // dashboard route
+    Route::get('/', [\App\Http\Controllers\AdminDashboardController::class, 'allUsers'])->name('home');
+
     Route::get('/dashboard', [\App\Http\Controllers\AdminDashboardController::class, 'allUsers'])->name('dashboard');
 
     // logout route

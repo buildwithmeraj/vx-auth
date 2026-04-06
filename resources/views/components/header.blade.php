@@ -4,7 +4,7 @@
     </div>
     <div class="flex-none">
         @if(auth()->check())
-            <img src="{{ auth()->user()->photo }}" alt="Profile Picture" class="w-10 rounded-full inline mr-2" />
+            <img src="{{ auth()->user()->photo }}" alt="Profile Picture" class="w-10 h-10 rounded-full inline mr-2" />
             <a href="/dashboard" class="hover:text-primary mr-2">Dashboard</a>
             <form action="/logout" method="post" class="inline">
                 @csrf

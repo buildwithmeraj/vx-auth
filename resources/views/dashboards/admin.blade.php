@@ -107,7 +107,7 @@ User since</span>
                                 <x-alert-success>{{ session('status') }}</x-alert-success>
                             </div>
                         @endif
-                        @if($users->isEmpty())
+                        @if($all_users->isEmpty())
                             <div class="mt-4 text-center text-sm opacity-50">No users found.</div>
                         @else
                             <div class="overflow-auto mt-4">
@@ -124,7 +124,7 @@ User since</span>
                                     </tr>
                                     </thead>
                                     <tbody>
-                                    @foreach($users as $u)
+                                    @foreach($all_users as $u)
                                         <tr>
                                             <td>{{ $user->userID }}</td>
                                             <td>{{ $user->first_name }} {{ $user->last_name }}</td>

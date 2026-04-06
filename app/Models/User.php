@@ -16,7 +16,7 @@ class User extends Authenticatable
     /** @use HasFactory<UserFactory> */
     use HasFactory, Notifiable;
 
-    protected $guarded = [];
+    protected $guarded = []; // allows assignment for all attributes
 
     /**
      * Get the attributes that should be cast.

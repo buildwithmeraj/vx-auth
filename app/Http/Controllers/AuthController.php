@@ -60,6 +60,7 @@ class AuthController extends Controller
                     ->withInput();
             }
 
+            // validate the data
             $validator = Validator::make($data, [
                 'first_name' => 'required|string|max:20',
                 'last_name' => 'required|string|max:20',
@@ -70,6 +71,7 @@ class AuthController extends Controller
                 'address' => 'required|string|min:10|max:50',
             ]);
 
+            // if validation fails, redirect back to the form with errors and old input
             if ($validator->fails()) {
                 return redirect()->back()
                     ->withErrors($validator)
@@ -100,8 +102,10 @@ class AuthController extends Controller
                     ->withInput();
             }
 
+            // clear the registration session data
             session()->forget(['register_step', 'register_data']);
 
+            // refresh the user instance to get the latest data from the database
             $user->refresh();
 
             $userID = $user->userID;
@@ -121,6 +125,7 @@ class AuthController extends Controller
 
     private function generateToken($length)
     {
+        // generate a random string of the specified length
         return Str::password($length ?? 8, true, true, false, false);
     }
 
@@ -128,19 +133,21 @@ class AuthController extends Controller
     {
         // return view according to the current step stored in session
         return view('auth.login', [
-            'data' => session('login_data', []) // Pass session data
+            'data' => session('login_data', [])
         ]);
     }
 
     public function loginProcess(Request $request)
     {
-
+        // validate the credentials
         $credential = $request->validate(
             [
                 'userid' => 'required|string|size:8',
                 'password' => 'nullable|string|min:6|max:20',
             ]
         );
+
+        // find the user by userID
         $user = User::where('userID', $credential['userid'])->first();
 
         if (!$user) {
@@ -210,13 +217,18 @@ class AuthController extends Controller
 
     public function forgotPasswordProcess()
     {
+        // validate the email
         $email = request()->validate([
             'email' => 'required|email|exists:users,email',
         ])['email'];
+
+        // find the user by email
         $user = User::where('email', $email)->first();
         if(!$user) {
             return redirect()->back()->withErrors(['email' => 'No user found with this email address.']);
         }
+
+        // generate a new reset token and save it to the user
         $token = $this->generateToken(32);
         $user->reset_token = $token;
         $user->save();

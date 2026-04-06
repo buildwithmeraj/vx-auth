@@ -20,6 +20,7 @@ class UserCredentialsMail extends Mailable
     public function envelope(): Envelope
     {
         return new Envelope(
+            // set the subject of the email
             subject: 'Your Vixlo Account Credentials',
         );
     }
@@ -27,6 +28,7 @@ class UserCredentialsMail extends Mailable
     public function content(): Content
     {
         return new Content(
+            // set the view of the email
             view: 'emails.user-credentials',
         );
     }

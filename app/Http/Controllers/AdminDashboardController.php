@@ -7,12 +7,14 @@ class AdminDashboardController extends Controller
 {
     public function allUsers()
     {
-        if(!auth()->user()->role === 'admin') {
+        // check if the user is an admin, if not show the user dashboard
+        if(auth()->user()->role !== 'admin') {
             return view('dashboards.user');
         } else {
             return view('dashboards.admin', [
                 'users' => User::all()
             ]);
         }
+
     }
 }

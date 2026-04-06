@@ -1,8 +1,11 @@
 <div class="flex h-[82vh] items-center justify-center">
-    <div class="card bg-base-300 w-sm shadow-sm">
+    <div class="card bg-base-300 w-sm md:w-md shadow-sm">
         <form action="/register" method="post" class="card-body">
             @csrf
-            <h2 class="card-title">Step 3</h2>
+            <h2 class="text-center font-bold text-2xl">Register</h2>
+            <div class="flex justify-center -mt-7 mb-2">
+                <x-registration-steps></x-registration-steps>
+            </div>
             @error('registration')
             <x-alert-error>{{ $message }}</x-alert-error>
             @enderror
@@ -133,12 +136,25 @@
                     </p>
                 </div>
             </div>
-            <label class="label"><input type="checkbox" id="agreement" name="agreement" class="checkbox mr-2"
-                                        required />
-                I agree</label>
-            <div class="card-actions justify-between">
-                <button type="submit" form="prev" class="btn">Prev</button>
-                <button type="submit" name="submit" class="btn btn-primary">Submit</button>
+            <label class="label text-base-content mt-2"><input type="checkbox" id="agreement" name="agreement"
+                                                               class="checkbox mr-2"
+                                                               required />
+                I agree to the terms and policies</label>
+            <div class="card-actions justify-between mt-2">
+                <button type="submit" form="prev" class="btn">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                         stroke="currentColor" class="size-4 mt-0.5">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 19.5 8.25 12l7.5-7.5" />
+                    </svg>
+                    Previous
+                </button>
+                <button type="submit" name="submit" class="btn btn-primary">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                         stroke="currentColor" class="size-4 ">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="m4.5 12.75 6 6 9-13.5" />
+                    </svg>
+                    Submit
+                </button>
             </div>
 
         </form>

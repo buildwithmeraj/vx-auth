@@ -20,6 +20,7 @@ class ForgotPasswordMail extends Mailable
     public function envelope(): Envelope
     {
         return new Envelope(
+            // set the subject of the email
             subject: 'Vixlo Password Reset',
         );
     }
@@ -27,6 +28,7 @@ class ForgotPasswordMail extends Mailable
     public function content(): Content
     {
         return new Content(
+            // set the view of the email
             view: 'emails.forgot-password',
         );
     }

@@ -34,7 +34,7 @@ Route::middleware('auth')->group(function () {
         ->name('home');
 
     Route::get('/dashboard', [\App\Http\Controllers\DashboardController::class, 'index'])
-        ->middleware('permission:dashboard.view')
+        ->middleware('permission:dashboards.view')
         ->name('dashboard');
 
     // logout route
@@ -44,6 +44,26 @@ Route::middleware('auth')->group(function () {
         request()->session()->regenerateToken();
         return redirect('/login');
     })->name('logout');
+
+
+    Route::prefix('dashboard/roles')->name('dashboard.roles.')->group(function () {
+    Route::get('/', [\App\Http\Controllers\RoleManagementController::class, 'index'])
+        ->middleware('permission:roles.view')
+        ->name('index');
+
+    Route::post('/', [\App\Http\Controllers\RoleManagementController::class, 'store'])
+        ->middleware('permission:roles.manage')
+        ->name('store');
+
+    Route::put('/{role}', [\App\Http\Controllers\RoleManagementController::class, 'update'])
+        ->middleware('permission:roles.manage')
+        ->name('update');
+
+    Route::delete('/{role}', [\App\Http\Controllers\RoleManagementController::class, 'destroy'])
+        ->middleware('permission:roles.manage')
+        ->name('destroy');
+});
+
 });
 
 // no middleware routes

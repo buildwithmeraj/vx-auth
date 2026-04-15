@@ -18,6 +18,8 @@ class User extends Authenticatable
     use HasFactory, Notifiable, HasRoles;
 
     protected $guarded = []; // allows assignment for all attributes
+    protected string $guard_name = 'web';
+
 
     /**
      * Get the attributes that should be cast.

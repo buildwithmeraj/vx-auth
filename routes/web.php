@@ -29,9 +29,13 @@ Route::middleware('guest')->group(function () {
 // auth required routes
 Route::middleware('auth')->group(function () {
     // dashboard route
-    Route::get('/', [\App\Http\Controllers\AdminDashboardController::class, 'allUsers'])->name('home');
+    Route::get('/', [\App\Http\Controllers\DashboardController::class, 'index'])
+        ->middleware('permission:dashboard.view')
+        ->name('home');
 
-    Route::get('/dashboard', [\App\Http\Controllers\AdminDashboardController::class, 'allUsers'])->name('dashboard');
+    Route::get('/dashboard', [\App\Http\Controllers\DashboardController::class, 'index'])
+        ->middleware('permission:dashboard.view')
+        ->name('dashboard');
 
     // logout route
     Route::post('/logout', function () {

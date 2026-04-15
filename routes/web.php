@@ -34,7 +34,7 @@ Route::middleware('auth')->group(function () {
         ->name('home');
 
     Route::get('/dashboard', [\App\Http\Controllers\DashboardController::class, 'index'])
-        ->middleware('permission:dashboards.view')
+        ->middleware('permission:dashboard.view')
         ->name('dashboard');
 
     // logout route
@@ -63,6 +63,26 @@ Route::middleware('auth')->group(function () {
         ->middleware('permission:roles.manage')
         ->name('destroy');
 });
+
+
+Route::prefix('dashboard/permissions')->name('dashboard.permissions.')->group(function () {
+    Route::get('/', [\App\Http\Controllers\PermissionManagementController::class, 'index'])
+        ->middleware('permission:permissions.view')
+        ->name('index');
+
+    Route::post('/', [\App\Http\Controllers\PermissionManagementController::class, 'store'])
+        ->middleware('permission:permissions.manage')
+        ->name('store');
+
+    Route::put('/{permission}', [\App\Http\Controllers\PermissionManagementController::class, 'update'])
+        ->middleware('permission:permissions.manage')
+        ->name('update');
+
+    Route::delete('/{permission}', [\App\Http\Controllers\PermissionManagementController::class, 'destroy'])
+        ->middleware('permission:permissions.manage')
+        ->name('destroy');
+});
+
 
 });
 

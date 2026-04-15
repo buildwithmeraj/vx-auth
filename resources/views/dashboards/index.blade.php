@@ -37,7 +37,12 @@
                     <div class="card-body">
                         <h2 class="card-title text-base">Users</h2>
                         <p>Total users: <strong>{{ $usersCount ?? 0 }}</strong></p>
-                        <a href="{{ route('dashboard.users.index') }}" class="btn btn-sm mt-2">Manage Users</a>
+                        @if (Route::has('dashboard.users.index'))
+    <a href="{{ route('dashboard.users.index') }}" class="btn btn-sm mt-2">Manage Users</a>
+@else
+    <span class="text-xs opacity-60">User management module coming next</span>
+@endif
+
                     </div>
                 </div>
             @endcan

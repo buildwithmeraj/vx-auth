@@ -21,7 +21,7 @@ class UserCredentialsMail extends Mailable
     {
         return new Envelope(
             // set the subject of the email
-            subject: 'Your Vixlo Account Credentials',
+            subject: 'Vixlo Account Credentials',
         );
     }
 

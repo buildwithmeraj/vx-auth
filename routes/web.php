@@ -1,6 +1,10 @@
 <?php
 
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\PermissionManagementController;
+use App\Http\Controllers\RoleManagementController;
+use App\Http\Controllers\UserAccessController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
@@ -29,11 +33,11 @@ Route::middleware('guest')->group(function () {
 // auth required routes
 Route::middleware('auth')->group(function () {
     // dashboard route
-    Route::get('/', [\App\Http\Controllers\DashboardController::class, 'index'])
+    Route::get('/', [DashboardController::class, 'index'])
         ->middleware('permission:dashboard.view')
         ->name('home');
 
-    Route::get('/dashboard', [\App\Http\Controllers\DashboardController::class, 'index'])
+    Route::get('/dashboard', [DashboardController::class, 'index'])
         ->middleware('permission:dashboard.view')
         ->name('dashboard');
 
@@ -46,55 +50,58 @@ Route::middleware('auth')->group(function () {
     })->name('logout');
 
 
+    // dashboard management routes
+
+    // role management routes
     Route::prefix('dashboard/roles')->name('dashboard.roles.')->group(function () {
-    Route::get('/', [\App\Http\Controllers\RoleManagementController::class, 'index'])
+    Route::get('/', [RoleManagementController::class, 'index'])
         ->middleware('permission:roles.view')
         ->name('index');
 
-    Route::post('/', [\App\Http\Controllers\RoleManagementController::class, 'store'])
+    // role creation, update, and deletion routes
+    Route::post('/', [RoleManagementController::class, 'store'])
         ->middleware('permission:roles.manage')
         ->name('store');
 
-    Route::put('/{role}', [\App\Http\Controllers\RoleManagementController::class, 'update'])
+    Route::put('/{role}', [RoleManagementController::class, 'update'])
         ->middleware('permission:roles.manage')
         ->name('update');
 
-    Route::delete('/{role}', [\App\Http\Controllers\RoleManagementController::class, 'destroy'])
+    Route::delete('/{role}', [RoleManagementController::class, 'destroy'])
         ->middleware('permission:roles.manage')
         ->name('destroy');
 });
 
-
+// permission management routes
 Route::prefix('dashboard/permissions')->name('dashboard.permissions.')->group(function () {
-    Route::get('/', [\App\Http\Controllers\PermissionManagementController::class, 'index'])
+    Route::get('/', [PermissionManagementController::class, 'index'])
         ->middleware('permission:permissions.view')
         ->name('index');
 
-    Route::post('/', [\App\Http\Controllers\PermissionManagementController::class, 'store'])
+    Route::post('/', [PermissionManagementController::class, 'store'])
         ->middleware('permission:permissions.manage')
         ->name('store');
 
-    Route::put('/{permission}', [\App\Http\Controllers\PermissionManagementController::class, 'update'])
+    Route::put('/{permission}', [PermissionManagementController::class, 'update'])
         ->middleware('permission:permissions.manage')
         ->name('update');
 
-    Route::delete('/{permission}', [\App\Http\Controllers\PermissionManagementController::class, 'destroy'])
+    Route::delete('/{permission}', [PermissionManagementController::class, 'destroy'])
         ->middleware('permission:permissions.manage')
         ->name('destroy');
-
-        
 });
 
+// user access management routes
 Route::prefix('dashboard/users')->name('dashboard.users.')->group(function () {
-    Route::get('/', [\App\Http\Controllers\UserAccessController::class, 'index'])
+    Route::get('/', [UserAccessController::class, 'index'])
         ->middleware('permission:users.view')
         ->name('index');
 
-    Route::put('/{user}/roles', [\App\Http\Controllers\UserAccessController::class, 'updateRoles'])
+    Route::put('/{user}/roles', [UserAccessController::class, 'updateRoles'])
         ->middleware('permission:assignments.manage')
         ->name('roles.update');
 
-    Route::put('/{user}/permissions', [\App\Http\Controllers\UserAccessController::class, 'updatePermissions'])
+    Route::put('/{user}/permissions', [UserAccessController::class, 'updatePermissions'])
         ->middleware('permission:assignments.manage')
         ->name('permissions.update');
 });

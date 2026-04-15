@@ -11,18 +11,19 @@ return new class extends Migration
      */
     public function up(): void
     {
+        // get the table names and column names from the config file
         $teams = config('permission.teams');
         $tableNames = config('permission.table_names');
         $columnNames = config('permission.column_names');
+
+        // set the pivot keys for role and permission tables, with defaults if not set in the config
         $pivotRole = $columnNames['role_pivot_key'] ?? 'role_id';
         $pivotPermission = $columnNames['permission_pivot_key'] ?? 'permission_id';
 
         throw_if(empty($tableNames), 'Error: config/permission.php not loaded. Run [php artisan config:clear] and try again.');
         throw_if($teams && empty($columnNames['team_foreign_key'] ?? null), 'Error: team_foreign_key on config/permission.php not loaded. Run [php artisan config:clear] and try again.');
 
-        /**
-         * See `docs/prerequisites.md` for suggested lengths on 'name' and 'guard_name' if "1071 Specified key was too long" errors are encountered.
-         */
+        // create the permissions table
         Schema::create($tableNames['permissions'], static function (Blueprint $table) {
             $table->id(); // permission id
             $table->string('name');
@@ -32,9 +33,7 @@ return new class extends Migration
             $table->unique(['name', 'guard_name']);
         });
 
-        /**
-         * See `docs/prerequisites.md` for suggested lengths on 'name' and 'guard_name' if "1071 Specified key was too long" errors are encountered.
-         */
+        // create the roles table
         Schema::create($tableNames['roles'], static function (Blueprint $table) use ($teams, $columnNames) {
             $table->id(); // role id
             if ($teams || config('permission.testing')) { // permission.testing is a fix for sqlite testing
@@ -51,6 +50,7 @@ return new class extends Migration
             }
         });
 
+        // create the model_has_permissions table
         Schema::create($tableNames['model_has_permissions'], static function (Blueprint $table) use ($tableNames, $columnNames, $pivotPermission, $teams) {
             $table->unsignedBigInteger($pivotPermission);
 
@@ -74,6 +74,7 @@ return new class extends Migration
             }
         });
 
+        // create the model_has_roles table
         Schema::create($tableNames['model_has_roles'], static function (Blueprint $table) use ($tableNames, $columnNames, $pivotRole, $teams) {
             $table->unsignedBigInteger($pivotRole);
 
@@ -97,6 +98,7 @@ return new class extends Migration
             }
         });
 
+        // create the role_has_permissions table
         Schema::create($tableNames['role_has_permissions'], static function (Blueprint $table) use ($tableNames, $pivotRole, $pivotPermission) {
             $table->unsignedBigInteger($pivotPermission);
             $table->unsignedBigInteger($pivotRole);
@@ -119,9 +121,7 @@ return new class extends Migration
             ->forget(config('permission.cache.key'));
     }
 
-    /**
-     * Reverse the migrations.
-     */
+    // reverse the migrations and drop the tables
     public function down(): void
     {
         $tableNames = config('permission.table_names');

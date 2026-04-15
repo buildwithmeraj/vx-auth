@@ -9,10 +9,12 @@ class AdminUserSeeder extends Seeder
 {
     public function run(): void
     {
+        // define admin user details
         $adminEmail = 'admin@example.com';
         $adminUserId = 'VX000001';
         $adminPassword = 'Admin12345';
 
+        // create or update the admin user
         $admin = User::updateOrCreate(
             ['email' => $adminEmail],
             [
@@ -29,6 +31,7 @@ class AdminUserSeeder extends Seeder
             ]
         );
 
+        // assign the admin role to the user
         $admin->syncRoles(['admin']);
     }
 }

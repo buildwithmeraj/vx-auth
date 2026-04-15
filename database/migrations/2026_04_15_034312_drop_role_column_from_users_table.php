@@ -6,17 +6,23 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-    public function up(): void
-    {
+   public function up(): void
+{
+    // check if the 'role' column exists before trying to drop it
+    if (Schema::hasColumn('users', 'role')) {
         Schema::table('users', function (Blueprint $table) {
             $table->dropColumn('role');
         });
     }
+}
 
-    public function down(): void
-    {
+public function down(): void
+{
+    if (! Schema::hasColumn('users', 'role')) {
         Schema::table('users', function (Blueprint $table) {
             $table->string('role')->default('user')->after('last_name');
         });
     }
+}
+
 };

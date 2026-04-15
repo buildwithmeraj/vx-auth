@@ -21,30 +21,38 @@ class UserAccessController extends Controller
     }
 
     public function updateRoles(Request $request, User $user)
-    {
-        abort_unless(auth()->user()->can('assignments.manage'), 403);
+{
+    abort_unless(auth()->user()->can('assignments.manage'), 403);
 
-        $data = $request->validate([
-            'roles' => 'nullable|array',
-            'roles.*' => 'string|exists:roles,name',
-        ]);
+    $data = $request->validate([
+        'roles' => 'nullable|array',
+        'roles.*' => 'string|exists:roles,name,guard_name,web',
+    ]);
 
-        $user->syncRoles($data['roles'] ?? []);
+    $requestedRoles = $data['roles'] ?? [];
 
-        return back()->with('status', 'User roles updated.');
+    if (auth()->id() === $user->id && $user->hasRole('admin') && !in_array('admin', $requestedRoles, true)) {
+        return back()->withErrors(['roles' => 'You cannot remove your own admin role.']);
     }
+
+    $user->syncRoles($requestedRoles);
+
+    return back()->with('status', 'User roles updated.');
+}
+
 
     public function updatePermissions(Request $request, User $user)
-    {
-        abort_unless(auth()->user()->can('assignments.manage'), 403);
+{
+    abort_unless(auth()->user()->can('assignments.manage'), 403);
 
-        $data = $request->validate([
-            'permissions' => 'nullable|array',
-            'permissions.*' => 'string|exists:permissions,name',
-        ]);
+    $data = $request->validate([
+        'permissions' => 'nullable|array',
+        'permissions.*' => 'string|exists:permissions,name,guard_name,web',
+    ]);
 
-        $user->syncPermissions($data['permissions'] ?? []);
+    $user->syncPermissions($data['permissions'] ?? []);
 
-        return back()->with('status', 'User direct permissions updated.');
-    }
+    return back()->with('status', 'User direct permissions updated.');
+}
+
 }

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Validation\Rule;
 use Spatie\Permission\Models\Permission;
 use Spatie\Permission\Models\Role;
 
@@ -23,9 +24,14 @@ class RoleManagementController extends Controller
         abort_unless(auth()->user()->can('roles.manage'), 403);
 
         $data = $request->validate([
-            'name' => 'required|string|max:50|unique:roles,name',
+            'name' => [
+                'required',
+                'string',
+                'max:50',
+                Rule::unique('roles', 'name')->where(fn ($q) => $q->where('guard_name', 'web')),
+            ],
             'permissions' => 'nullable|array',
-            'permissions.*' => 'string|exists:permissions,name',
+            'permissions.*' => 'string|exists:permissions,name,guard_name,web',
         ]);
 
         $role = Role::create([
@@ -41,11 +47,19 @@ class RoleManagementController extends Controller
     public function update(Request $request, Role $role)
     {
         abort_unless(auth()->user()->can('roles.manage'), 403);
+        abort_unless($role->guard_name === 'web', 404);
 
         $data = $request->validate([
-            'name' => 'required|string|max:50|unique:roles,name,' . $role->id,
+            'name' => [
+                'required',
+                'string',
+                'max:50',
+                Rule::unique('roles', 'name')
+                    ->ignore($role->id)
+                    ->where(fn ($q) => $q->where('guard_name', 'web')),
+            ],
             'permissions' => 'nullable|array',
-            'permissions.*' => 'string|exists:permissions,name',
+            'permissions.*' => 'string|exists:permissions,name,guard_name,web',
         ]);
 
         $role->update(['name' => $data['name']]);
@@ -57,6 +71,7 @@ class RoleManagementController extends Controller
     public function destroy(Role $role)
     {
         abort_unless(auth()->user()->can('roles.manage'), 403);
+        abort_unless($role->guard_name === 'web', 404);
 
         if ($role->name === 'admin') {
             return back()->withErrors(['role' => 'Admin role cannot be deleted.']);

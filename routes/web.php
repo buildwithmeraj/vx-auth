@@ -81,8 +81,23 @@ Route::prefix('dashboard/permissions')->name('dashboard.permissions.')->group(fu
     Route::delete('/{permission}', [\App\Http\Controllers\PermissionManagementController::class, 'destroy'])
         ->middleware('permission:permissions.manage')
         ->name('destroy');
+
+        
 });
 
+Route::prefix('dashboard/users')->name('dashboard.users.')->group(function () {
+    Route::get('/', [\App\Http\Controllers\UserAccessController::class, 'index'])
+        ->middleware('permission:users.view')
+        ->name('index');
+
+    Route::put('/{user}/roles', [\App\Http\Controllers\UserAccessController::class, 'updateRoles'])
+        ->middleware('permission:assignments.manage')
+        ->name('roles.update');
+
+    Route::put('/{user}/permissions', [\App\Http\Controllers\UserAccessController::class, 'updatePermissions'])
+        ->middleware('permission:assignments.manage')
+        ->name('permissions.update');
+});
 
 });
 

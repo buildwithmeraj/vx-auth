@@ -1,5 +1,17 @@
+@php
+    $isDashboardArea = auth()->check() && (request()->routeIs('home') || request()->routeIs('dashboard*'));
+@endphp
+
 <div class="navbar bg-base-100 shadow-sm px-3 md:px-5 lg:px-10">
-    <div class="flex-1">
+    <div class="flex-1 flex items-center gap-2">
+        @if($isDashboardArea)
+            <label for="dashboard-drawer" class="cursor-pointer drawer-trigger lg:hidden">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
+                </svg>
+            </label>
+        @endif
+
         <a class="font-bold text-2xl" href="/">Vixlo</a>
     </div>
     <div class="flex-none">

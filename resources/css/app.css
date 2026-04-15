@@ -1,4 +1,4 @@
-@import 'tailwindcss';
+@import "tailwindcss";
 
 @source '../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php';
 @source '../../storage/framework/views/*.php';
@@ -7,6 +7,6 @@
 
 @plugin "daisyui";
 
-label {
+label:not(.drawer-overlay):not(.drawer-button):not(.drawer-trigger) {
     @apply block text-sm font-medium opacity-70 my-1;
 }

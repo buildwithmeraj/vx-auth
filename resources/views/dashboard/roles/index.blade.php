@@ -3,7 +3,8 @@
 @section('title', 'Role Management')
 
 @section('content')
-    <div class="max-w-7xl mx-auto p-4 space-y-6">
+        <div class="max-w-7xl mx-auto p-4 space-y-6">
+
         <div class="flex items-center justify-between">
             <h1 class="text-2xl font-bold">Role Management</h1>
             <a href="{{ route('dashboard') }}" class="btn btn-sm">Back to Dashboard</a>
@@ -112,7 +113,8 @@
                             </tr>
                         @empty
                             <tr>
-                                <td colspan="3" class="text-center">No roles found.</td>
+                                <td colspan="{{ auth()->user()->can('roles.manage') ? 3 : 2 }}" class="text-center">
+No roles found.</td>
                             </tr>
                         @endforelse
                         </tbody>
@@ -120,5 +122,5 @@
                 </div>
             </div>
         </div>
-    </div>
+</div>
 @endsection

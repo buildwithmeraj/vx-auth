@@ -1,4 +1,3 @@
-```blade
 @extends('layouts.app')
 
 @section('title', 'User Access Management')
@@ -95,7 +94,9 @@
                             </tr>
                         @empty
                             <tr>
-                                <td colspan="6" class="text-center">No users found.</td>
+                                <td colspan="{{ auth()->user()->can('assignments.manage') ? 6 : 5 }}" class="text-center">
+                                    No users found.
+                                </td>
                             </tr>
                         @endforelse
                         </tbody>
@@ -105,4 +106,3 @@
         </div>
     </div>
 @endsection
-```

@@ -3,7 +3,7 @@
 @section('title', 'Permission Management')
 
 @section('content')
-    <div class="max-w-7xl mx-auto p-4 space-y-6">
+        <div class="max-w-7xl mx-auto p-4 space-y-6">
         <div class="flex items-center justify-between">
             <h1 class="text-2xl font-bold">Permission Management</h1>
             <a href="{{ route('dashboard') }}" class="btn btn-sm">Back to Dashboard</a>
@@ -85,7 +85,8 @@
                             </tr>
                         @empty
                             <tr>
-                                <td colspan="2" class="text-center">No permissions found.</td>
+                                <td colspan="{{ auth()->user()->can('permissions.manage') ? 2 : 1 }}" class="text-center">
+No permissions found.</td>
                             </tr>
                         @endforelse
                         </tbody>
@@ -93,5 +94,5 @@
                 </div>
             </div>
         </div>
-    </div>
+</div>
 @endsection

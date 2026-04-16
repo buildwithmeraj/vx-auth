@@ -1,17 +1,6 @@
 <div class="bg-base-200 min-h-full w-80 p-4">
     <h3 class="font-bold mb-3">Navigation</h3>
     <ul class="menu w-full gap-1">
-        <li>
-            <a href="{{ route('dashboard.profile.show') }}"
-               class="{{ request()->routeIs('dashboard.profile.*') ? 'active' : '' }}">
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="size-5">
-                    <path fill-rule="evenodd"
-                          d="M18 10a8 8 0 1 1-16 0 8 8 0 0 1 16 0Zm-5.5-2.5a2.5 2.5 0 1 1-5 0 2.5 2.5 0 0 1 5 0ZM10 12a5.99 5.99 0 0 0-4.793 2.39A6.483 6.483 0 0 0 10 16.5a6.483 6.483 0 0 0 4.793-2.11A5.99 5.99 0 0 0 10 12Z"
-                          clip-rule="evenodd" />
-                </svg>
-                Profile
-            </a>
-        </li>
         @can('dashboard.view')
             <li>
                 <a href="{{ route('dashboard') }}"
@@ -25,7 +14,17 @@
                 </a>
             </li>
         @endcan
-
+        <li>
+            <a href="{{ route('dashboard.profile.show') }}"
+               class="{{ request()->routeIs('dashboard.profile.*') ? 'active' : '' }}">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="size-5">
+                    <path fill-rule="evenodd"
+                          d="M18 10a8 8 0 1 1-16 0 8 8 0 0 1 16 0Zm-5.5-2.5a2.5 2.5 0 1 1-5 0 2.5 2.5 0 0 1 5 0ZM10 12a5.99 5.99 0 0 0-4.793 2.39A6.483 6.483 0 0 0 10 16.5a6.483 6.483 0 0 0 4.793-2.11A5.99 5.99 0 0 0 10 12Z"
+                          clip-rule="evenodd" />
+                </svg>
+                Profile
+            </a>
+        </li>
         @can('users.view')
             <li>
                 <a href="{{ route('dashboard.users.index') }}"

@@ -29,7 +29,7 @@
             <a href="/register" class="hover:text-primary hidden md:inline-block">Register</a>
         @endif
 
-        <button type="button" class="btn btn-circle btn-active btn-sm" data-theme-toggle
+        <button type="button" class="btn btn-circle btn-active btn-sm ml-2" data-theme-toggle
                 aria-label="Toggle theme">
             <svg data-theme-icon-light xmlns="http://www.w3.org/2000/svg" class="size-5 hidden" fill="none"
                  viewBox="0 0 24 24" stroke="currentColor">

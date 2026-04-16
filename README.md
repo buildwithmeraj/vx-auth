@@ -1,6 +1,12 @@
 # VX Auth
 
-Laravel project for a role-based authentication flow with a 3-step registration form and a user ID based login.
+Laravel 13 authentication + RBAC project with:
+- 3-step registration
+- User ID based login
+- Spatie role/permission management
+- Unified dashboard with permission-based sidebar and routes
+- Profile view/edit pages
+- Dark/Light theme switcher
 
 ## Live Demo
 
@@ -8,56 +14,99 @@ Laravel project for a role-based authentication flow with a 3-step registration 
 
 ## Requirements
 
-- PHP and Composer
-- Node.js and npm
-- MySQL/MariaDB
+- PHP 8.3+
+- Composer
+- Node.js + npm
+- MySQL/MariaDB (or SQLite for tests)
 
 ## Setup
 
-1. Install dependencies:
-    - `composer install`
-    - `npm install`
+1. Install dependencies
+   - `composer install`
+   - `npm install`
 
-2. Create your environment file:
-    - `cp .env.example .env`
+2. Create environment file
+   - `cp .env.example .env`
 
-3. Configure `.env`:
-    - Set `APP_URL`
-    - Set `DB_*` credentials
-    - (Optional) Set `MAIL_*` credentials to send emails
+3. Configure `.env`
+   - `APP_URL`
+   - `DB_*` values
+   - Optional mail settings (`MAIL_*`)
 
-4. Generate the app key:
-    - `php artisan key:generate`
+4. Generate key
+   - `php artisan key:generate`
 
-5. Run database migrations:
-    - `php artisan migrate`
+5. Run migrations + seeders
+   - `php artisan migrate --seed`
 
-6. Build frontend assets:
-    - `npm run build`
+6. Build frontend assets
+   - `npm run build`
 
-7. Start the app:
-    - `php artisan serve`
+7. Start app
+   - `php artisan serve`
 
-## Usage
+## Authentication Flow
 
-- Register from `/register` (3 steps). After completion you will receive a generated User ID by email (if mail is configured).
-- Log in from `/login` using your User ID.
-- After first login (when password is not set), set a password from the reset password page.
+- Register at `/register` (3 steps).
+- A random `userID` is generated (e.g. `VX123456`).
+- User gets temporary credentials flow and sets password via reset screen.
+- Login via `/login` using `userID` + password.
 
-## Database (SQL)
+## RBAC (Spatie)
 
-- SQL dump file: `database/sql/vx_auth.sql`
+The app seeds baseline permissions and roles:
 
-## Admin account (optional)
+- Permissions:
+  - `dashboard.view`
+  - `users.view`, `users.manage`
+  - `roles.view`, `roles.manage`
+  - `permissions.view`, `permissions.manage`
+  - `assignments.manage`
 
-To seed a predefined admin account:
+- Roles:
+  - `admin` (all baseline permissions)
+  - `user` (`dashboard.view` only)
 
-1. Set these values in `.env`:
-    - `ADMIN_EMAIL=admin@example.com`
-    - `ADMIN_USERID=VX000001`
-    - `ADMIN_PASSWORD=Admin12345`
+Newly registered users are assigned the `user` role automatically.
 
-2. Run:
-    - `php artisan db:seed`
+## Dashboard Routes
 
-Then log in from `/login` using the `ADMIN_USERID` and `ADMIN_PASSWORD`.
+- `/dashboard` -> Dashboard home (`dashboard.view`)
+- `/dashboard/profile` -> Profile view
+- `/dashboard/profile/edit` -> Profile edit
+- `/dashboard/roles` -> Role management (`roles.view/manage`)
+- `/dashboard/permissions` -> Permission management (`permissions.view/manage`)
+- `/dashboard/users` -> User access management (`users.view`, `assignments.manage`)
+
+## Admin Seeder
+
+Admin credentials are now defined directly in:
+
+- `database/seeders/AdminUserSeeder.php`
+
+Default seeded values:
+- Email: `admin@example.com`
+- User ID: `VX000001`
+- Password: `Admin12345`
+
+Run seed:
+- `php artisan db:seed`
+
+## Frontend Notes
+
+- DaisyUI drawer sidebar for dashboard pages.
+- Theme toggle (dark/light) stored in `localStorage`.
+
+## Tests
+
+Run all tests:
+- `php artisan test`
+
+Run a specific test:
+- `php artisan test --filter=DashboardAccessTest`
+
+## Notes
+
+- If you changed role/permission seed values, reseed with:
+  - `php artisan migrate:fresh --seed`
+- `database/sql/vx_auth.sql` may be out of date compared to latest migrations.

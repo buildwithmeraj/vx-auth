@@ -15,7 +15,7 @@ class DashboardController extends Controller
         abort_unless($user->can('dashboard.view'), 403);
 
         // return the dashboard view with relevant data based on user permissions
-        return view('dashboards.index', [
+        return view('dashboard.index', [
             'user' => $user,
             'usersCount' => $user->can('users.view') ? User::count() : null,
             'rolesCount' => $user->can('roles.view') ? \Spatie\Permission\Models\Role::count() : null,

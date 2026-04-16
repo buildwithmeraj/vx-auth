@@ -34,10 +34,6 @@ Route::middleware('guest')->group(function () {
 // auth required routes
 Route::middleware('auth')->group(function () {
     // dashboard route
-    Route::get('/', [DashboardController::class, 'index'])
-        ->middleware('permission:dashboard.view')
-        ->name('home');
-
     Route::get('/dashboard', [DashboardController::class, 'index'])
         ->middleware('permission:dashboard.view')
         ->name('dashboard');
@@ -123,6 +119,9 @@ Route::middleware('auth')->group(function () {
 });
 
 // no middleware routes
+Route::get('/', function (){
+    return view('welcome');
+})    ->name('home');
 Route::get('/reset-password', function () {
     return view('auth.password-reset');
 })->name('password.reset');

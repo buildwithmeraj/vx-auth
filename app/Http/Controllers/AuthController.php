@@ -96,6 +96,9 @@ class AuthController extends Controller
 
             $user = User::create($validated_data);
 
+            // assign the user role
+            $user->assignRole('user');
+
             if (!$user) {
                 return redirect()->back()
                     ->withErrors(['registration' => 'Failed to create user. Please try again.'])

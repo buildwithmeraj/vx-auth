@@ -50,6 +50,20 @@ Route::middleware('auth')->group(function () {
     })->name('logout');
 
 
+    // profile routes
+    Route::get('/dashboard/profile', [\App\Http\Controllers\ProfileController::class, 'show'])
+    ->middleware('permission:dashboard.view')
+    ->name('dashboard.profile.show');
+
+    Route::get('/dashboard/profile/edit', [\App\Http\Controllers\ProfileController::class, 'edit'])
+    ->middleware('permission:dashboard.view')
+    ->name('dashboard.profile.edit');
+
+    Route::put('/dashboard/profile', [\App\Http\Controllers\ProfileController::class, 'update'])
+        ->middleware('permission:dashboard.view')
+        ->name('dashboard.profile.update');
+
+
     // dashboard management routes
 
     // role management routes

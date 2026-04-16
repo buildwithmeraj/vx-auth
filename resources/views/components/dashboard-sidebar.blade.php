@@ -1,5 +1,10 @@
 <div class="bg-base-200 min-h-full w-80 p-4">
     <h3 class="font-bold mb-3">Navigation</h3>
+    <li>
+        <a href="{{ route('dashboard.profile.show') }}" class="{{ request()->routeIs('dashboard.profile.*') ? 'active' : '' }}">
+            Profile
+        </a>
+    </li>
     <ul class="menu w-full gap-1">
         @can('dashboard.view')
             <li>
